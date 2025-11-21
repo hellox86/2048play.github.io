@@ -1,0 +1,43 @@
+.slider-container {
+    position: absolute;
+    bottom: 93%;
+    left: 75%;
+}
+
+input[type=checkbox]{
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+label {
+    cursor: pointer;
+    width: 50px;
+    height: 24px;
+    background: grey;
+    display: block;
+    border-radius: 45px;
+    position: relative;
+}
+label:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 45px;
+    transition: 0.3s;
+}
+input:checked + label {
+    background: rgb(33, 150, 243);
+}
+input:checked + label:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+}
+label:active:after {
+    width: 30px;
+}
+
