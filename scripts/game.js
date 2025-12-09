@@ -1,5 +1,6 @@
 'use strict';
-import * as matrix from "./modules/rotationMatrixModule.js";
+
+import * as matrix from "./rotationMatrixModule.js";
 
 const fw = 400;
 const fh = 400;
@@ -33,7 +34,7 @@ function drawField() {
     ctx.stroke();
 }
 
-class GameField {    
+export class GameField {    
     #f;
     constructor (f) {
 	this.#f = f;
@@ -60,11 +61,17 @@ class GameField {
 		col = randomInRange(0, 3);
 	    } while(this.#f[row][col] != 0);
 	    this.#f[row][col] = output;
-	    fillCell(100*row+5, 100*col+5, "rgb(238, 228, 218)", 90, 90);
+	    
+	    fillCell(100*col+5, 100*row+5, "rgb(238, 228, 218)", 90, 90);
+	    // console.log(`${i} cell -> (${row}, ${col})`);
+	    
 	    ctx.fillStyle = "rgb(117, 100, 82)";
 	    ctx.font = "30px sans-serif";
 	    const res = output.toString();
-	    ctx.fillText(res, 100*row+75, 100*col+75);
+	    ctx.textBaseline = "middle";
+	    ctx.textAlign = "center";
+
+	    ctx.fillText(res, offset + gridCellSize * col + gridCellSize/2, offset + gridCellSize * row + gridCellSize/2);
 	}
     }   
 
@@ -138,10 +145,5 @@ class GameField {
 	console.log();
     }
 }
-
 drawField();
-const mem = matrix.createField();
-const field = new GameField(mem);
-
-field.generateNum(2);
-
+export const mem = matrix.createField();
