@@ -6,26 +6,30 @@ const body = document.querySelector("body");
 
 field.generateNum(2);
 
-field.print();
-
 body.addEventListener('keydown', (e) => {
     switch (e.key) {
     case "a":	
     case "ArrowLeft":
-	console.log("Move Left!");
+	field.moveLeft();
+	field.print();
 	break;
     case "d":
     case "ArrowRight":
-	console.log("Move Right!");
+	field.moveRight();
+	field.print();
 	break;
     case "w":
     case "ArrowUp":
-	console.log("Move Up!");
+	field.moveUp();
+	field.print()
 	break;
     case "s":
     case "ArrowDown":
-	console.log("Move Down!");
+	field.moveDown();
+	field.print();
 	break;	
     }
+    field.generateNum();
+    field.print();
 })
 

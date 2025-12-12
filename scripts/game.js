@@ -39,7 +39,7 @@ export class GameField {
     constructor (f) {
 	this.#f = f;
     }
-    generateNum(times) {
+    generateNum(times=1) {
 	let output = 2;
 	const randomInRange = (min, max) => {
 	    const minCeiled = Math.ceil(min);
@@ -75,7 +75,7 @@ export class GameField {
 	}
     }   
 
-    move_left() {
+    moveLeft() {
 	let arr = matrix.createField();
 	let el_counter = 0;
 	
@@ -113,21 +113,21 @@ export class GameField {
 	this.#f = res.slice();
     }
 
-    move_right() {
+    moveRight() {
 	this.#f = matrix.rotate_180(this.#f);
-	this.move_left();
+	this.moveLeft();
 	this.#f = matrix.rotate_180(this.#f);
     }
 
-    move_down() {
+    moveDown() {
 	this.#f = matrix.rotate_90cw(this.#f);
-	this.move_left();
+	this.moveLeft();
 	this.#f = matrix.rotate_90ccw(this.#f);
     }
 
-    move_up() {
+    moveUp() {
 	this.#f = matrix.rotate_90ccw(this.#f);
-	this.move_left();
+	this.moveLeft();
 	this.#f = matrix.rotate_90cw(this.#f);
     }
     print() {

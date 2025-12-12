@@ -1,7 +1,0 @@
-
-import { GameField, mem } from "./game.js";
-
-const field = new GameField(mem);
-
-field.generateNum(2);
-field.print();
