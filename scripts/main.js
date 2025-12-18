@@ -1,35 +1,34 @@
 
+'use strict'
+
 import { GameField, mem } from "./game.js";
 
 const field = new GameField(mem);
-const body = document.querySelector("body");
 
-field.generateNum(2);
+field.draw();
 
-body.addEventListener('keydown', (e) => {
-    switch (e.key) {
-    case "a":	
-    case "ArrowLeft":
-	field.moveLeft();
-	field.print();
-	break;
-    case "d":
-    case "ArrowRight":
-	field.moveRight();
-	field.print();
-	break;
-    case "w":
-    case "ArrowUp":
-	field.moveUp();
-	field.print()
-	break;
-    case "s":
-    case "ArrowDown":
-	field.moveDown();
-	field.print();
-	break;	
+document.addEventListener('keydown', (e) => {	
+    if (!field.isGameOver()) {	
+	if (e.key == "ArrowLeft" || e.key == "a") {
+	    field.moveLeft();
+	    field.generateNum();
+	    field.print();
+	} else if (e.key == "ArrowRight" || e.key == "d") {
+	    field.moveRight();
+	    field.generateNum();
+	    field.print(); 
+	} else if (e.key == "ArrowUp" || e.key == "w") {
+	    field.moveUp();
+	    field.generateNum();
+	    field.print();
+	} else if (e.key == "ArrowDown" || e.key == "s") {
+	    field.moveDown();
+	    field.generateNum();
+	    field.print();
+	}
+    } else {
+	console.log("Game Over!");
+	field.draw();
     }
-    field.generateNum();
-    field.print();
 })
 

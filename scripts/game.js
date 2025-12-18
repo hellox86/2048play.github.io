@@ -1,5 +1,3 @@
-'use strict';
-
 import * as matrix from "./rotationMatrixModule.js";
 
 const fw = 400;
@@ -13,26 +11,13 @@ function fillCell(x, y, color, w=gridCellSize, h=gridCellSize) {
     ctx.fillStyle = color;
     ctx.fillRect(0.5 + x + offset, offset + y, w, h);
 }
-function drawField() {
-    for (let x = 0; x <= fw; x += gridCellSize) {
-        ctx.moveTo(0.5 + x + offset, offset);
-        ctx.lineTo(0.5 + x + offset, fh + offset);
-	for (let y = 0; y <= fh; y += gridCellSize) {
-	    ctx.moveTo(offset, 0.5 + y + offset);
-	    ctx.lineTo(fw + offset, 0.5 + y + offset);
-	}
-    }
-    for (let x = 0; x < fw; x += gridCellSize) {
-	for (let y = 0; y < fh; y += gridCellSize)
-	{
-	    fillCell(x, y, "rgb(189, 172, 151)");
-	}	
-    }
-    
-    ctx.strokeStyle = "rgb(155, 136, 120)";
-    ctx.lineWidth = 9;
-    ctx.stroke();
-}
+const defaultData = {
+    "2color": "rgb(238, 228, 218)",
+    "4color": "rgb(237, 223, 175)",
+    "fontC": "rgb(117, 100, 82)",
+    "cellC": "rgb(189, 172, 151)",
+    "bgC": "rgb(155, 136, 120)",
+};
 
 export class GameField {    
     #f;
@@ -45,7 +30,7 @@ export class GameField {
 	    const minCeiled = Math.ceil(min);
 	    const maxFloored = Math.floor(max);
 	    return Math.floor(Math.random()*(maxFloored-minCeiled+1) + minCeiled);
-	}
+	};
 	for (let i = 0; i < times; i++) {
 	    const randIndex = randomInRange(0, 9);
 
@@ -61,12 +46,13 @@ export class GameField {
 		col = randomInRange(0, 3);
 	    } while(this.#f[row][col] != 0);
 	    this.#f[row][col] = output;
-	    
-	    fillCell(100*col+5, 100*row+5, "rgb(238, 228, 218)", 90, 90);
-	    // console.log(`${i} cell -> (${row}, ${col})`);
-	    
-	    ctx.fillStyle = "rgb(117, 100, 82)";
-	    ctx.font = "30px sans-serif";
+	    let currentColor = defaultData["2color"];
+	    if (output == 4) {
+		currentColor = defaultData["4color"];
+	    }
+	    fillCell(100*col+5, 100*row+5, currentColor, 90, 90);
+	    ctx.fillStyle = defaultData["fontC"];
+	    ctx.font = "40px sans-serif";
 	    const res = output.toString();
 	    ctx.textBaseline = "middle";
 	    ctx.textAlign = "center";
@@ -74,17 +60,38 @@ export class GameField {
 	    ctx.fillText(res, offset + gridCellSize * col + gridCellSize/2, offset + gridCellSize * row + gridCellSize/2);
 	}
     }   
-
+    draw() {
+	for (let x = 0; x <= fw; x += gridCellSize) {
+            ctx.moveTo(0.5 + x + offset, offset);
+            ctx.lineTo(0.5 + x + offset, fh + offset);
+	    for (let y = 0; y <= fh; y += gridCellSize) {
+		ctx.moveTo(offset, 0.5 + y + offset);
+		ctx.lineTo(fw + offset, 0.5 + y + offset);
+	    }
+	}
+	for (let x = 0; x < fw; x += gridCellSize) {
+	    for (let y = 0; y < fh; y += gridCellSize) {
+		fillCell(x, y, defaultData["cellC"]);
+	    }	
+	}
+	
+	ctx.strokeStyle = defaultData["bgC"];
+	ctx.lineWidth = 9;
+	ctx.stroke();
+	for (let i = 0; i < 4; i++) {
+	    for (let j = 0; j < 4; j++) {
+		this.#f[i][j] = 0;
+	    }
+	}	
+	this.generateNum(2);
+    }
     moveLeft() {
 	let arr = matrix.createField();
 	let el_counter = 0;
 	
-	for (let i = 0; i < 4; i++)
-	{
-	    for (let j = 0; j < 4; j++)
-	    {
-		if (this.#f[i][j] != 0)
-		{
+	for (let i = 0; i < 4; i++) {
+	    for (let j = 0; j < 4; j++) {
+		if (this.#f[i][j] != 0) {
 		    arr[i][el_counter] = this.#f[i][j];
 		    el_counter++;
 		}
@@ -92,17 +99,12 @@ export class GameField {
 	    el_counter = 0;	
 	}
 	let res = matrix.createField();
-	for (let i = 0; i < 4; i++)
-	{
-	    for (let j = 0; j < 4;)
-	    {
-		if (j+1 < 4 && arr[i][j] == arr[i][j+1])
-		{
+	for (let i = 0; i < 4; i++) {
+	    for (let j = 0; j < 4;) {
+		if (j+1 < 4 && arr[i][j] == arr[i][j+1]) {
 		    res[i][el_counter] = arr[i][j]*2;
 		    j+=2;
-		}
-		else
-		{
+		} else {
 		    res[i][el_counter] = arr[i][j];
 		    j++;
 		}
@@ -130,6 +132,21 @@ export class GameField {
 	this.moveLeft();
 	this.#f = matrix.rotate_90cw(this.#f);
     }
+    isGameOver() {
+	let flag = false;
+	let c = 0;
+	for (let i = 0; i < 4; i++) {
+	    for (let j = 0; j < 4; j++) {
+		if(this.#f[i][j] == 0) {
+		    c++;
+		}
+	    }
+	}
+	if (c == 0) {
+	    flag = true;
+	}
+	return flag;
+    }
     print() {
 	let res = "";
 	let c = 0;
@@ -145,5 +162,5 @@ export class GameField {
 	console.log();
     }
 }
-drawField();
+
 export const mem = matrix.createField();
