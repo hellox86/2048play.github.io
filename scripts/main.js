@@ -4,7 +4,7 @@ import { GameField, mem } from "./game.js";
 
 const field = new GameField(mem);
 
-field.draw();
+field.reset();
 
 function spawn() {
     setTimeout(() => {
@@ -29,7 +29,7 @@ document.addEventListener('keydown', (e) => {
 	field.update();
     } else {
 	alert("Game Over!");
-	field.draw();
+	field.reset();
     }
 })
 
