@@ -10,7 +10,7 @@ input[type=checkbox]{
     visibility: hidden;
 }
 
-label {
+#switch-lbl {
     cursor: pointer;
     width: 50px;
     height: 24px;
@@ -19,7 +19,7 @@ label {
     border-radius: 45px;
     position: relative;
 }
-label:after {
+#switch-lbl:after {
     content: '';
     position: absolute;
     top: 2px;
@@ -30,14 +30,14 @@ label:after {
     border-radius: 45px;
     transition: 0.3s;
 }
-input:checked + label {
+input:checked + #switch-lbl {
     background: rgb(33, 150, 243);
 }
-input:checked + label:after {
+input:checked + #switch-lbl:after {
     left: calc(100% - 5px);
     transform: translateX(-100%);
 }
-label:active:after {
+#switch-lbl:active:after {
     width: 30px;
 }
 

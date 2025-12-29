@@ -47,5 +47,18 @@ export function rotate_90ccw(f)
     }
     return tmp;
 }
-
+export function compareTwoMatrix(f1, f2) {
+    let c = 0;
+    for (let i = 0; i < 4; i++) {
+	for (let j = 0; j < 4; j++) {
+	    if (f1[i][j] == f2[i][j]) {
+		c++;
+	    }
+	}
+    }
+    if (c == 16) {
+	return true;
+    }
+    return false;
+}
 export * from "./rotationMatrixModule.js";

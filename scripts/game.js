@@ -4,15 +4,15 @@ const fw = 400;
 const fh = 400;
 const gridCellSize = 100;
 const offset = 10;
-
-const ctx = document.getElementById("canvas").getContext("2d");
-
-const textSize = "35px";
-
+const canvas = document.getElementById("canvas");
+const textSize = "40px";
+const font = "sans-serif";
+// const ratio = window.devicePixelRatio || 1; // retina display detection
+const ctx = canvas.getContext("2d");
 const tileColor = {
     "2": "rgb(238, 228, 218)",
     "4": "rgb(236, 224, 200)",
-    "8": "rgb(239, 178, 124)",
+    "8": "rgb(243, 178, 122)",
     "16": "rgb(245, 149, 99)",
     "32": "rgb(245, 124, 95)",
     "64": "rgb(246, 93, 59)",
@@ -26,7 +26,6 @@ const tileColor = {
 
 function fillCell(x, y, color, w=gridCellSize, h=gridCellSize) {
     ctx.fillStyle = color;
-
     ctx.fillRect(0.5 + x + offset, offset + y, w, h);
 }
 function createCell(num, pos, textColor) {
@@ -35,7 +34,7 @@ function createCell(num, pos, textColor) {
     
     ctx.fillStyle = textColor;
     ctx.strokeStyle = textColor;	    
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     const res = num.toString();
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
@@ -48,6 +47,7 @@ export class GameField {
     count;
     constructor (f) {
 	this.#f = f;
+	this.count = 0;
     }
     generateNum(times=1) {
 	let output;
@@ -59,7 +59,7 @@ export class GameField {
 	for (let i = 0; i < times; ++i) {
 	    output = 2;
 	    const randIndex = randomInRange(0, 9);
-
+	    
 	    if (randIndex == 9) {
 		output = 4;
 	    }
@@ -72,9 +72,9 @@ export class GameField {
 	    this.#f[row][col] = output;
 	    const currentColor = (output > 2) ? tileColor["4"] : tileColor["2"];
 	    const textColor = "rgb(117, 100, 82)"; 
-	    fillCell(100*col+5, 100*row+5, currentColor, 90, 90);
-	    ctx.font = `${textSize} sans-serif`;
-	    createCell(this.#f[row][col], [row, col], textColor); 
+	    fillCell(100*col+5, 100*row+5, currentColor, 91, 91);
+	    ctx.font = `${textSize} ${font}`;
+	    createCell(this.#f[row][col], [row, col], textColor);
 	}
     }   
     draw() {
@@ -83,19 +83,21 @@ export class GameField {
             ctx.lineTo(0.5 + x + offset, fh + offset);
 	    for (let y = 0; y <= fh; y += gridCellSize) {
 		ctx.moveTo(offset, 0.5 + y + offset);
-		ctx.lineTo(fw + offset, 0.5 + y + offset);
+		ctx.lineTo(fw + offset, 0.5 + y + offset);		
 	    }
-	}
+	}	
 	for (let x = 0; x < fw; x += gridCellSize) {
 	    for (let y = 0; y < fh; y += gridCellSize) {
-		fillCell(x, y, "rgb(189, 172, 151)");
+		fillCell(x, y, "rgb(184, 169, 156)");
 	    }	
 	}
-	ctx.strokeStyle = "rgb(155, 136, 120)";
-	ctx.lineWidth = 9;
+	ctx.lineWidth = 5;
+	ctx.strokeStyle = "rgb(156, 138, 124)";
 	ctx.stroke();
+
     }
     reset() {
+	this.count = 0;
 	this.draw();
 	for (let i = 0; i < 4; ++i) {
 	    for (let j = 0; j < 4; ++j) {
@@ -106,6 +108,9 @@ export class GameField {
 	    this.generateNum(2);
 	}, 150);
     }
+    getF() {
+	return this.#f; 
+    }    
     update() {
 	this.draw();
 	for (let i = 0; i < 4; ++i) {
@@ -116,7 +121,7 @@ export class GameField {
 		    } else {
 			fillCell(100*j+5, 100*i+5, tileColor[this.#f[i][j].toString()], 90, 90);			    	
 		    }
-		    ctx.font = `${textSize} sans-serif`;
+		    ctx.font = `${textSize} ${font}`;
 		    const textColor = (this.#f[i][j] <= 4) ? "rgb(117, 100, 82)" : "rgb(255, 255, 255)";
 		    createCell(this.#f[i][j], [i, j], textColor);
 		}
@@ -152,31 +157,44 @@ export class GameField {
 	}
 	this.#f = res.slice();
     }
-
+    cmp(prev, now) {
+	return matrix.compareTwoMatrix(prev, now);
+    }
     moveRight() {
+	const prev = this.#f;
 	this.#f = matrix.rotate_180(this.#f);
 	this.moveLeft();
 	this.#f = matrix.rotate_180(this.#f);
+	const now = this.#f;
+	return this.cmp(prev, now);
     }
-
+    
     moveDown() {
+	const prev = this.#f;
 	this.#f = matrix.rotate_90cw(this.#f);
 	this.moveLeft();
 	this.#f = matrix.rotate_90ccw(this.#f);
+	const now = this.#f;
+	return this.cmp(prev, now);
     }
 
     moveUp() {
+	const prev = this.#f;
 	this.#f = matrix.rotate_90ccw(this.#f);
 	this.moveLeft();
 	this.#f = matrix.rotate_90cw(this.#f);
+	const now = this.#f;
+	return this.cmp(prev, now);
+	
     }
+    
     isGameOver() {
 	let flag = false;
 	let c = 0;
 	for (let i = 0; i < 4; ++i) {
 	    for (let j = 0; j < 4; ++j) {
 		if(this.#f[i][j] == 0) {
-		    c++;
+		    ++c;
 		}
 	    }
 	}

@@ -4,6 +4,7 @@ body {
 }
 
 .title-container {
+    position: relative;
     display: flex;
     justify-content: center;
 }
@@ -16,34 +17,59 @@ body {
     color: rgb(119, 110, 101);
 }
 .srcc-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; 
-    height: 80vh;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .srcc-container img {    
     width: 35px;
     height: 35px;
 }
-.srcc-container a {
+.srcc-container img {
     transition: transform .3s ease-in-out;
 }
-.srcc-container a:hover {
+.srcc-container img:hover {
     transform: scale(1.2);
 }
 
 .game-container {
-    display: flex;
-    justify-content: center;
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
 }
 #canvas {
-    font-family: "Noto Sans", sans-serif;
-    font-weight: bold;
-    font-size: 80px;
-    
+    width: 400px;
+    height: 400px;
+    font-family: "Noto Sans", sans-serif;    
+}
+.restart-container { 
     position: absolute;
-    top: -70vh;
+    bottom: 93%;
+    left: 80%;
+}
+#restart {
+    font-family: "Arial";
+    font-weight: 500;
+    font-size: 18px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    background: rgb(156, 138, 124);
+    border-radius: 5px;
+    border-color: transparent;
+    padding: 5px 15px;
 }
 
+.score-container {
+    border-radius: 3px;
+    font-family: "Noto Sans", sans-serif;
+    color: #FFF;    
+    background: rgb(140, 112, 99);
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
