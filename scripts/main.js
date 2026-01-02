@@ -72,37 +72,40 @@ document.addEventListener("touchstart", (e) => {
     startX = e.changedTouches[0].clientX;
     startY = e.changedTouches[0].clientY;
 })
-document.addEventListener("touchend", (e) => {
-    endX = e.changedTouches[0].clientX;
-    endY = e.changedTouches[0].clientY;
-    console.log([startX, startY], [endX, endY]);
-})
 
 function gameMobile(e) {
-    let direction = "";
-    
-    const deviationX = Math.abs(startX)-Math.abs(endX);
-    const deviationY = Math.abs(startY)-Math.abs(endY);
-    
-    if(deviationX > 0) {
-	const prev = field.getF();
-	field.moveLeft();
-	const now = field.getF();
-	if(!field.cmp(prev, now)) {
-	    spawn();
-	}	
-    } else if(deviationX < 0) {
-	if(!field.moveRight()) {
-	    spawn();
-	}	
-    } else if(deviationY > 0) {
-	if(!field.moveUp()) {
-	    spawn();
-	}	
-    } else if(deviationY < 0) {
-	if(!field.moveDown()) {
-	    spawn();
-	}	
+    const deviationX = startX-endX;
+    const deviationY = startY-endY;
+    let flag = true;
+    if(Math.abs(deviationX) > Math.abs(deviationY)) {
+	flag = true;
+    } else if(Math.abs(deviationX) < Math.abs(deviationY)) {
+	flag = false;
+    }
+    if(flag) {
+	if(deviationX > 0) {    
+	    const prev = field.getF();
+	    field.moveLeft();
+	    const now = field.getF();
+	    if(!field.cmp(prev, now)) {
+		spawn();
+	    }	
+	} else if(deviationX < 0) {
+	    if(!field.moveRight()) {
+		spawn();
+	    }
+	}
+    }
+    else {	    
+	if(deviationY > 0) {
+	    if(!field.moveUp()) {
+		spawn();
+	    }
+	} else if(deviationY < 0) {
+	    if(!field.moveDown()) {
+		spawn();
+	    }
+	}
     }
     localStorage.setItem("field", JSON.stringify(field.getF()));
     localStorage.setItem("score", field.count);    
@@ -114,12 +117,15 @@ function gameMobile(e) {
     } else {
 	count.innerText = `Score: ${field.count}`;
 	field.update();	
-    }    
+    }
+    
 }
 document.addEventListener("keydown", (e) => {
     game(e);
 })
-document.addEventListener("touchmove", () => {
+document.addEventListener("touchend", (e) => {
+    endX = e.changedTouches[0].clientX;
+    endY = e.changedTouches[0].clientY;
     gameMobile();
 })
 
