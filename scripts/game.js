@@ -11,6 +11,13 @@ const ctx = canvas.getContext("2d");
 
 const fillAreaValue = 90;
 
+export const inputs = {
+    keyA: false,
+    keyD: false,
+    keyW: false,
+    keyS: false,    
+}
+
 const tileColor = {
   2: "rgb(238, 228, 218)",
   4: "rgb(236, 224, 200)",
@@ -79,130 +86,147 @@ export class GameField {
       let row;
       let col;
       let i = 0;
-
+	
       do {
         row = randomInRange(0, 3);
         col = randomInRange(0, 3);
         i++;
       } while (this.#f[row][col] != 0 && i < 35);
 
-      if (i == 35) {
-        return;
-      }
-      this.#f[row][col] = output;
-      const currentColor = output > 2 ? tileColor["4"] : tileColor["2"];
-      const textColor = "rgb(117, 100, 82)";
-      fillCell(
-        100 * col + 5,
-        100 * row + 5,
-        currentColor,
-        fillAreaValue,
-        fillAreaValue,
-      );
-      ctx.font = `${textSize} ${font}`;
-      createCell(this.#f[row][col], [row, col], textColor);
+	if (i == 35) {
+            return;
+	}
+	this.#f[row][col] = output;
+	const currentColor = output > 2 ? tileColor["4"] : tileColor["2"];
+	const textColor = "rgb(117, 100, 82)";
+	fillCell(
+            100 * col + 5,
+            100 * row + 5,
+            currentColor,
+            fillAreaValue,
+            fillAreaValue,
+	);
+	ctx.font = `${textSize} ${font}`;
+	createCell(this.#f[row][col], [row, col], textColor);
     }
   }
-  draw() {
-    for (let x = 0; x <= fw; x += gridCellSize) {
-      ctx.moveTo(0.5 + x + offset, offset);
-      ctx.lineTo(0.5 + x + offset, fh + offset);
-      for (let y = 0; y <= fh; y += gridCellSize) {
-        ctx.moveTo(offset, 0.5 + y + offset);
-        ctx.lineTo(fw + offset, 0.5 + y + offset);
-      }
+    draw() {
+	for (let x = 0; x <= fw; x += gridCellSize) {
+	    ctx.moveTo(0.5 + x + offset, offset);
+	    ctx.lineTo(0.5 + x + offset, fh + offset);
+	    for (let y = 0; y <= fh; y += gridCellSize) {
+		ctx.moveTo(offset, 0.5 + y + offset);
+		ctx.lineTo(fw + offset, 0.5 + y + offset);
+	    }
+	}
+	for (let x = 0; x < fw; x += gridCellSize) {
+	    for (let y = 0; y < fh; y += gridCellSize) {
+		fillCell(x, y, "rgb(184, 169, 156)");
+	    }
+	}
+	ctx.lineWidth = 5;
+	ctx.strokeStyle = "rgb(156, 138, 124)";
+	ctx.stroke();
     }
-    for (let x = 0; x < fw; x += gridCellSize) {
-      for (let y = 0; y < fh; y += gridCellSize) {
-        fillCell(x, y, "rgb(184, 169, 156)");
-      }
+    reset() {
+	this.count = 0;
+	this.draw();
+	for (let i = 0; i < 4; ++i) {
+	    for (let j = 0; j < 4; ++j) {
+		this.#f[i][j] = 0;
+	    }
+	}
+	this.generateNum(2);
     }
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "rgb(156, 138, 124)";
-    ctx.stroke();
-  }
-  reset() {
-    this.count = 0;
-    this.draw();
-    for (let i = 0; i < 4; ++i) {
-      for (let j = 0; j < 4; ++j) {
-        this.#f[i][j] = 0;
-      }
+    getF() {
+	return this.#f;
     }
-    this.generateNum(2);
-  }
-  getF() {
-    return this.#f;
-  }
-  setF(obj) {
-    this.#f = obj;
-  }
-  update() {
-    this.draw();
-    for (let i = 0; i < 4; ++i) {
-      for (let j = 0; j < 4; ++j) {
-        if (this.#f[i][j] != 0) {
-          if (this.#f[i][j] > 2048) {
-            fillCell(
-              100 * j + 5,
-              100 * i + 5,
-              tileColor["default"],
-              fillAreaValue,
-              fillAreaValue,
-            );
-          } else {
-            fillCell(
-              100 * j + 5,
-              100 * i + 5,
-              tileColor[this.#f[i][j].toString()],
-              fillAreaValue,
-              fillAreaValue,
-            );
-          }
-          ctx.font = `${textSize} ${font}`;
-          const textColor =
-            this.#f[i][j] <= 4 ? "rgb(117, 100, 82)" : "rgb(255, 255, 255)";
-          createCell(this.#f[i][j], [i, j], textColor);
-        }
-      }
+    setF(obj) {
+	this.#f = obj;
     }
-  }
-  moveLeft(f = true) {
-    let arr = matrix.createField();
-    let el_counter = 0;
-    for (let i = 0; i < 4; ++i) {
-      for (let j = 0; j < 4; ++j) {
-        if (this.#f[i][j] != 0) {
-          arr[i][el_counter] = this.#f[i][j];
-          ++el_counter;
-        }
-      }
-      el_counter = 0;
+    // old ver
+	// update() {
+    //   this.draw();
+    //   for (let i = 0; i < 4; ++i) {
+    //     for (let j = 0; j < 4; ++j) {
+    //       if (this.#f[i][j] != 0) {
+    //         if (this.#f[i][j] > 2048) {
+    //           fillCell(
+    //             100 * j + 5,
+    //             100 * i + 5,
+    //             tileColor["default"],
+    //             fillAreaValue,
+    //             fillAreaValue,
+    //           );
+    //         } else {
+    //           fillCell(
+    //             100 * j + 5,
+    //             100 * i + 5,
+    //             tileColor[this.#f[i][j].toString()],
+    //             fillAreaValue,
+    //             fillAreaValue,
+    //           );
+    //         }
+    //         ctx.font = `${textSize} ${font}`;
+    //         const textColor =
+    //           this.#f[i][j] <= 4 ? "rgb(117, 100, 82)" : "rgb(255, 255, 255)";
+    //         createCell(this.#f[i][j], [i, j], textColor);
+    //       }
+    //     }
+    //   }
+    // }
+    inputs() {
+	document.addEventListener((e) = > {
+	    if(e.key == "A" || e.key = "ArrowLeft") {
+		inputs.keyA = true;
+	    }
+	    else if(e.key == "D" || e.key == "ArrowRight") {
+		inputs.keyD = true;
+	    }
+	    else if(e.key == "W" || e.key == "ArrowUp") {
+		inputs.keyW = true;
+	    }
+	    else if (e.key == "S" || e.key == "ArrowDown") {
+		input.keyS = true;
+	    }
+	})
     }
-    let res = matrix.createField();
-    for (let i = 0; i < 4; ++i) {
-      for (let j = 0; j < 4; ) {
-        if (j + 1 < 4 && arr[i][j] == arr[i][j + 1]) {
-          res[i][el_counter] = arr[i][j] * 2;
-          j += 2;
-          this.count += res[i][el_counter];
-        } else {
-          res[i][el_counter] = arr[i][j];
-          ++j;
-        }
-        ++el_counter;
-      }
-      el_counter = 0;
+    moveLeft(f = true) {
+	let arr = matrix.createField();
+	let el_counter = 0;
+	for (let i = 0; i < 4; ++i) {
+	    for (let j = 0; j < 4; ++j) {
+		if (this.#f[i][j] != 0) {
+		    arr[i][el_counter] = this.#f[i][j];
+		    ++el_counter;
+		}
+	    }
+	    el_counter = 0;
+	}
+	let res = matrix.createField();
+	for (let i = 0; i < 4; ++i) {
+	    for (let j = 0; j < 4; ) {
+		if (j + 1 < 4 && arr[i][j] == arr[i][j + 1]) {
+		    res[i][el_counter] = arr[i][j] * 2;
+		    j += 2;
+		    this.count += res[i][el_counter];
+		} else {
+		    res[i][el_counter] = arr[i][j];
+		    ++j;
+		}
+		++el_counter;
+	    }
+	    el_counter = 0;
+	}
+	if (f) {
+	    this.#f = res.slice();
+	} else {
+	    this.#f2 = res.slice();
+	}
     }
-    if (f) {
-      this.#f = res.slice();
-    } else {
-      this.#f2 = res.slice();
+    cmp(prev, now) {
+	return matrix.compareTwoMatrix(prev, now);
     }
-  }
-  cmp(prev, now) {
-    return matrix.compareTwoMatrix(prev, now);
-  }
 
   moveRight() {
     const prev = this.#f;
@@ -230,6 +254,10 @@ export class GameField {
     const now = this.#f;
     return this.cmp(prev, now);
   }
+  update(dt) {
+
+  }
+    
   isFull() {
     for (let i = 0; i < 4; ++i) {
       for (let j = 0; j < 4; ++j) {

@@ -1,6 +1,6 @@
 "use strict";
 
-import { GameField, mem } from "./game.js";
+import { inputs, GameField, mem} from "./game.js";
 
 const field = new GameField(mem);
 
@@ -64,69 +64,3 @@ function game(e) {
     field.update();
   }
 }
-
-let startX,
-  startY = 0;
-let endX,
-  endY = 0;
-
-document.addEventListener("touchstart", (e) => {
-  startX = e.changedTouches[0].clientX;
-  startY = e.changedTouches[0].clientY;
-});
-
-function gameMobile() {
-  const deviationX = startX - endX;
-  const deviationY = startY - endY;
-  let flag = true;
-  if (Math.abs(deviationX) > Math.abs(deviationY)) {
-    flag = true;
-  } else if (Math.abs(deviationX) < Math.abs(deviationY)) {
-    flag = false;
-  }
-  if (flag) {
-    if (deviationX > 0) {
-      const prev = field.getF();
-      field.moveLeft();
-      const now = field.getF();
-      if (!field.cmp(prev, now)) {
-        spawn();
-      }
-    } else if (deviationX < 0) {
-      if (!field.moveRight()) {
-        spawn();
-      }
-    }
-  } else {
-    if (deviationY > 0) {
-      if (!field.moveUp()) {
-        spawn();
-      }
-    } else if (deviationY < 0) {
-      if (!field.moveDown()) {
-        spawn();
-      }
-    }
-  }
-  localStorage.setItem("field", JSON.stringify(field.getF()));
-  localStorage.setItem("score", field.count);
-
-  if (field.isGameOver()) {
-    alert("Game Over!");
-    field.reset();
-    localStorage.setItem("field", JSON.stringify(field.getF()));
-    count.innerText = `Score: ${field.count}`;
-  } else {
-    count.innerText = `Score: ${field.count}`;
-    field.update();
-  }
-}
-document.addEventListener("keydown", (e) => {
-  game(e);
-});
-
-document.addEventListener("touchend", (e) => {
-  endX = e.changedTouches[0].clientX;
-  endY = e.changedTouches[0].clientY;
-  gameMobile();
-});
