@@ -1,5 +1,5 @@
 body {
-    overflow: hidden; 
+    overflow: hidden;
     background-color: rgb(251, 244, 232);
 }
 
@@ -50,6 +50,11 @@ body {
     bottom: 93%;
     left: 80%;
 }
+.restart-container p {
+    position: absolute;
+    color: rgb(156, 138, 124);
+    cursor: pointer;
+}
 #restart {
     font-family: "Arial";
     font-weight: 500;
@@ -60,6 +65,7 @@ body {
     border-radius: 5px;
     border-color: transparent;
     padding: 5px 15px;
+
 }
 
 .score-container {
