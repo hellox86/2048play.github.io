@@ -52,8 +52,6 @@ function game(e) {
 	    spawn();
 	}
     }
-    localStorage.setItem("field", JSON.stringify(field.getF()));
-    localStorage.setItem("score", field.count);    
     if (field.isGameOver()) {
 	alert("Game Over!");
 	field.reset();	
@@ -107,9 +105,7 @@ function gameMobile(e) {
 	    }
 	}
     }
-    localStorage.setItem("field", JSON.stringify(field.getF()));
-    localStorage.setItem("score", field.count);    
-    if (field.isGameOver()) {
+if (field.isGameOver()) {
 	alert("Game Over!");
 	field.reset();	
 	localStorage.setItem("field", JSON.stringify(field.getF()));
@@ -128,6 +124,9 @@ document.addEventListener("touchend", (e) => {
     endY = e.changedTouches[0].clientY;
     gameMobile();
 })
-
+window.addEventListener("beforeunload", () => {	
+    localStorage.setItem("field", JSON.stringify(field.getF()));
+    localStorage.setItem("score", field.count);     
+})
 
 
