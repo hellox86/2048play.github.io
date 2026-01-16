@@ -36,6 +36,8 @@ howto.addEventListener("click", () => {
   window.location.href = `/2048play/howto`;
 });
 function game(e) {
+  localStorage.setItem("field", JSON.stringify(field.getF()));
+  localStorage.setItem("score", field.count);
   if (e.key == "ArrowLeft" || e.key == "a") {
     const prev = field.getF();
     field.moveLeft();
@@ -78,6 +80,8 @@ canvas.addEventListener("touchstart", (e) => {
 });
 
 function gameMobile(e) {
+  localStorage.setItem("field", JSON.stringify(field.getF()));
+  localStorage.setItem("score", field.count);
   const deviationX = startX - endX;
   const deviationY = startY - endY;
   let flag = true;
