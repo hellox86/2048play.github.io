@@ -80,6 +80,9 @@ body {
 }
 
 @media screen and (orientation: landscape) {
+    body {
+	overflow: visible;
+    }
     .game-container {
 	width: 100%;
 	height: 90%;
